@@ -1,0 +1,18 @@
+---
+disk_quota: 1024M
+domain: mybluemix.net
+instances: 1
+timeout: 120
+memory: 256M
+services:
+- CloudAMQP-y1
+- PostgreSQL by Compose-qu
+applications:
+- name: blupy_django_example01
+  host: blupy_celery_example01
+  # command: bash init_app.sh
+  command: gunicorn blupy.wsgi --workers=3
+- name: resworker
+  host: resworker
+  no-route: true
+  command: python manage.py celery worker -A blupy -l debug -c 3
