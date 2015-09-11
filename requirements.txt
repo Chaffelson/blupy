@@ -1,5 +1,8 @@
 django==1.8.4
 celery==3.1.18
 psycopg2==2.6.1
-whitenoise==2.0.3
-loggly-python-handler
+loggly-python-handler>=1.0.0
+django-celery>=3.1.16
+gunicorn>=19.3.0
+whitenoise>=2.0.3
+django-finalware>=0.1.0

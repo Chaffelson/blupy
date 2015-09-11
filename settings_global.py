@@ -2,6 +2,10 @@
 LOGGLY_TOKEN = ''
 DJANGO_SECRET = ''
 LOCALDEV_VCAP = ''
+SUPER_USER_PASSWORD = ''
+
+# Global Site URL setup
+DEV_SITE_URL = 'blupy.mybluemix.net'
 
 # Logging Config
 # Note that all logging is set to debug by default, you may wish to change this
@@ -36,7 +40,7 @@ LOGGING = {
             u'propagate': True,
             u'handlers': [u'loggly']
         },
-        # Default Modele loggers
+        # Default Django/Celery loggers
         u'django': {
             u'level': u'DEBUG',
             u'propagate': True,

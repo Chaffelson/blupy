@@ -1,14 +1,21 @@
-# Replace the following sections as instructed to allow local development to function as if running on Bluemix
+# UPDATE THIS SECRET INFORMATION ! #
+# UNCOMMENT THIS FILE IN .gitignore BEFORE YOU COMMIT! #
 
+# SuperUser Default Password
+SUPER_USER_PASSWORD = 'CHANGEME'
 
 # Log into your Loggly account, visit: https://<Username>.loggly.com/tokens and copy the token here
-LOGGLY_TOKEN = 'SomethingSecret'
+LOGGLY_TOKEN = 'CHANGEME'
 
 # Generate a very secure Django Secret to replace this one
-DJANGO_SECRET = 'NotAVeryGoodSecretAtAll'
+DJANGO_SECRET = 'CHANGEME'
 
-# Replace the following with a copy of your environment variables.
-# THe variables will only be available after you first deploy an app to Bluemix
+
+# OPTIONAL #
+
+# Replace the following with a copy of your environment variables if you wish to run the code locally
+# THe variables will only be available after you first deploy an app to Bluemix, whether the deployment succeeds or not.
+
 LOCALDEV_VCAP = {
    "cloudamqp": [
       {
@@ -16,8 +23,8 @@ LOCALDEV_VCAP = {
          "label": "cloudamqp",
          "plan": "lemur",
          "credentials": {
-            "uri": "SomethingSecret",
-            "http_api_uri": "SomethingSecret"
+            "uri": "amqp://CHANGEME:CHANGEME/CHANGEME",
+            "http_api_uri": "https://CHANGEME:CHANGEME/api/"
          }
       }
    ],
@@ -26,9 +33,9 @@ LOCALDEV_VCAP = {
          "name": "PostgreSQL by Compose-lj",
          "label": "user-provided",
          "credentials": {
-            "username": "SomethingSecret",
-            "password": "SomethingSecret!",
-            "public_hostname": "SomethingSecret"
+            "username": "CHANGEME",
+            "password": "CHANGEME",
+            "public_hostname": "localhost:5432"
          }
       }
    ]

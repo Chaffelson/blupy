@@ -67,6 +67,9 @@ out
 gen
 # Created by .ignore support plugin (hsz.mobi)
 
+# Excluding staticfiles from commit
+/staticfiles/admin
+/staticfiles/staticfiles.json
 
 # Private settings file
 # settings_local.py

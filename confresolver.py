@@ -25,7 +25,7 @@ try:
 except ImportError:
     pass
 
-# A unique identifier for this Python instance, handy for log segregation
+# A unique identifier for this Python instance, handy for log segregation with multiple workers
 INSTANCE = unicode(id(__name__))
 
 # Attempt to determine whether we are running in a LocalDev or Bluemix environment

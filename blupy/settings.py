@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from confresolver import *
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -20,23 +21,64 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '9vkn=xyl0p5q06k%6erldw**r6@2=0ihzih48aw+3@j1br+8uh'
+SECRET_KEY = DJANGO_SECRET
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', DEV_SITE_URL]
 
+# Celery Config
+# http://celery.readthedocs.org/en/latest/django/first-steps-with-django.html
+# Broker URL for CloudAMQP integration
+BROKER_URL = BOUND_SERVICES['CloudAMQP']['credentials']['uri']
+
+CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+CELERYD_HIJACK_ROOT_LOGGER = False
+CELERY_TIMEZONE = 'Europe/London'
+CELERY_DISABLE_RATE_LIMITS = True
+
+
+# CloudAMQP recommended settings
+BROKER_POOL_LIMIT = 1  # Will decrease connection usage
+BROKER_CONNECTION_TIMEOUT = 30  # May require a long timeout due to Linux DNS timeouts etc
+BROKER_HEARTBEAT = 30  # Will detect stale connections faster
+CELERY_SEND_EVENTS = False  # Will not create celeryev.* queues
+CELERY_EVENT_QUEUE_EXPIRES = 60  # Will delete all celeryev. queues without consumers after 1 minute.
+
+
+# Using Finalware to auto create the super user for convenience
+# http://stackoverflow.com/a/11210730/4717963
+SITE_SUPERUSER_USERNAME = 'admin'
+SITE_SUPERUSER_EMAIL = 'admin@example.com'
+SITE_SUPERUSER_PASSWORD = SUPER_USER_PASSWORD  # this is set in settings_local
+SITE_SUPERUSER_ID = '48'
+
+SITE_OBJECTS_INFO_DICT = {
+        '1': {
+            'name': 'development',
+            'domain': DEV_SITE_URL,
+        }
+    }
+SITE_ID = 1
 
 # Application definition
 
 INSTALLED_APPS = (
+    'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'djcelery',
+    'example',
+    'finalware',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -55,7 +97,7 @@ ROOT_URLCONF = 'blupy.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -63,6 +105,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'finalware.context_processors.contextify',
             ],
         },
     },
@@ -76,8 +119,12 @@ WSGI_APPLICATION = 'blupy.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'example01',
+        'USER': BOUND_SERVICES['PostgreSQL']['credentials']['username'],
+        'PASSWORD': BOUND_SERVICES['PostgreSQL']['credentials']['password'],
+        'HOST': BOUND_SERVICES['PostgreSQL']['credentials']['public_hostname'].split(':')[0],
+        'PORT': BOUND_SERVICES['PostgreSQL']['credentials']['public_hostname'].split(':')[1]
     }
 }
 
@@ -100,3 +147,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
