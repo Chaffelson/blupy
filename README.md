@@ -30,7 +30,7 @@ As this is intended as an example for how you would put a common Django applicat
 If you are unfamiliar with Bluemix you may wish to follow the basic tutorial offered when downloading the Cloud Foundry CLI in the links section.
 
 ## Contact
-@Chaffleson or dchaffey@hortonworks.com
+@Chaffelson or chaffelson@gmail.com
 
 ## Handy dandy links
 ### Documentation for services
